@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>이미지 업로드</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            width: 50%;
+            margin: 0 auto;
+            padding-top: 30px;
+        }
+        .category, .title, .file-upload {
+            margin-bottom: 20px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>이미지 업로드</h1>
+        <form method="POST" enctype="multipart/form-data">
+            <div class="title">
+                <label for="title">제목:</label>
+                <input type="text" name="title" id="title" required>
+            </div>
+
+            <div class="category">
+                <label>카테고리 선택:</label><br>
+                {% for category in categories %}
+                    <label>
+                        <input type="radio" name="category" value="{{ category[0] }}" required>
+                        {{ category[1] }}
+                    </label><br>
+                {% endfor %}
+            </div>
+
+            <div class="file-upload">
+                <label for="file">이미지 선택:</label>
+                <input type="file" name="file" accept="*" required>
+            </div>
+
+            <button type="submit">업로드</button>
+        </form>
+        <br>
+        <a href="{{ url_for('home') }}">홈으로 가기</a>
+    </div>
+</body>
+</html>

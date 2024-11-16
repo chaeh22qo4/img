@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>이미지 게시판</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            width: 80%;
+            margin: 0 auto;
+        }
+        .category {
+            margin-bottom: 20px;
+        }
+        .image-board {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .image-board .image {
+            text-align: center;
+        }
+        .image-board img {
+            width: 300px;
+            height: 400px;
+            object-fit: cover;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .image-board h4 {
+            margin-top: 10px;
+            font-size: 16px;
+        }
+        .upload-btn {
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .upload-btn:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>김해여고 이미지 게시판</h1>
+
+        <!-- 이미지 업로드 버튼 -->
+        <a href="{{ url_for('write') }}">
+            <button class="upload-btn">이미지 업로드</button>
+        </a>
+
+        {% for category, images in category_images.items() %}
+            <div class="category">
+                <h2>{{ category }}</h2>
+                <div class="image-board">
+                    {% for image in images %}
+                        <div class="image">
+                            <img src="{{ url_for('static', filename='uploads/' + image[1]) }}" alt="이미지">
+                            <h4>{{ image[2] }}</h4> <!-- 이미지 제목 -->
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</body>
+</html>
