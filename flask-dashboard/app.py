@@ -10,6 +10,7 @@ UPLOAD_FOLDER = 'static/uploads'
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
+#데이터베이스 연결
 app.config['MYSQL_DATABASE_USER'] = 'root'
 app.config['MYSQL_DATABASE_PASSWORD'] = 'Rch22qo4@'
 app.config['MYSQL_DATABASE_DB'] = 'board_db'
@@ -24,6 +25,7 @@ def get_categories():
     cursor.execute("SELECT * FROM categories")
     return cursor.fetchall()
 
+#메인 페이지
 @app.route('/', methods=['GET','POST'])
 def main():
     error = None
@@ -49,36 +51,38 @@ def main():
             error = 'invalid input data detected !'
     return render_template('main.html', error = error)
 
-@app.route('/register.html', methods=['GET', 'POST']) # 회원가입 화면
+# 회원가입 페이지
+@app.route('/register.html', methods=['GET', 'POST']) 
 def register():
     error = None
  
-    if request.method == 'POST': # POST 형식으로 요청할 것임
-        # 페이지에서 입력한 값을 받아와 변수에 저장
+    if request.method == 'POST':
+        # 입력한 id, pw 저장
         id = request.form['regi_id']
         pw = request.form['regi_pw']
  
-        sql = "INSERT INTO users VALUES ('%s', '%s')" % (id, pw) # 실행할 SQL문
-        cursor.execute(sql) # 메소드로 전달해 명령문을 실행
-        data = cursor.fetchall() # 실행한 결과 데이터를 꺼냄
+        sql = "INSERT INTO users VALUES ('%s', '%s')" % (id, pw)
+        cursor.execute(sql) 
+        data = cursor.fetchall()
  
         if not data:
-            conn.commit() # 변경사항 저장
-            return redirect(url_for('main'))  # 로그인 화면으로 이동
+            conn.commit()
+            return redirect(url_for('main'))
  
         else:
-            conn.rollback() # 데이터베이스에 대한 모든 변경사항을 되돌림
+            conn.rollback() 
             return "Register Failed"
  
         cursor.close()
         conn.close()
  
-    return render_template('register.html', error=error) # 용도 확인
+    return render_template('register.html', error=error)
 
-@app.route('/home.html', methods=['GET']) # 로그인 된 후 홈 화면
+# 로그인 된 후 홈
+@app.route('/home.html', methods=['GET']) 
 def home():
     error = None
-    categories = get_categories()  # 카테고리 목록 가져오기
+    categories = get_categories()
     category_images = {}
 
     # 카테고리별로 이미지 조회
@@ -92,13 +96,14 @@ def home():
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.',1)[1].lower() in ALLOWED_EXTENSIONS
 
+#이미지 입력 페이지
 @app.route('/write.html', methods=['GET','POST'])
 def write():
     error = None
     categories = get_categories()  # 카테고리 목록 가져오기
 
     if request.method == "POST":
-        # 제목, 파일, 카테고리 업로드 처리
+        # 제목, 파일, 카테고리 데이터베이스에 저장
         title = request.form['title']
         file = request.files['file']
         category_id = request.form['category']
@@ -108,13 +113,12 @@ def write():
             filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
             file.save(filepath)
 
-            # 이미지 정보를 MySQL에 저장
             cursor.execute(
                 "INSERT INTO images (filename, title, category_id) VALUES (%s, %s, %s)", (filename, title, category_id)
             )
             conn.commit()
 
-            # 업로드 후 홈으로 리다이렉션
+            # 업로드 후 홈으로 다시 이동
             return redirect(url_for('home'))
 
     return render_template("write.html", categories=categories)
