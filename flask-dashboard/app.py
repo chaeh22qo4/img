@@ -12,7 +12,7 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 #데이터베이스 연결
 app.config['MYSQL_DATABASE_USER'] = 'root'
-app.config['MYSQL_DATABASE_PASSWORD'] = 'Rch22qo4@'
+app.config['MYSQL_DATABASE_PASSWORD'] = '1234'
 app.config['MYSQL_DATABASE_DB'] = 'board_db'
 app.config['MYSQL_DATABASE_HOST'] = 'localhost'
 app.secret_key = "ABCEDFG"
